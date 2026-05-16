@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>徐诗涵你是不是猪</title>
+    <style>
+        :root {
+            --bg: #fff8f5;
+            --card-bg: #ffffff;
+            --text: #4a3040;
+            --yes: #ff9e80;
+            --yes-hover: #ff7a5c;
+            --no: #c0b8b0;
+            --no-hover: #a09890;
+            --shadow: 0 15px 50px rgba(255, 140, 100, 0.18);
+            --border: #ffe0d0;
+            --radius: 28px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            height: 100%;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #fff5f0 0%, #ffe8d8 25%, #fff8f2 50%, #ffe8d8 75%, #fff5f0 100%);
+            background-size: 300% 300%;
+            animation: gradientShift 18s ease infinite;
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
+            cursor: default;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        @keyframes gradientShift {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 100% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            75% {
+                background-position: 0% 100%;
+            }
+        }
+
+        /* 漂浮背景装饰 */
+        .floating-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+        }
+        .float-item {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatAround 9s ease-in-out infinite;
+            filter: blur(0.3px);
+        }
+        .float-item:nth-child(1) {
+            top: 5%;
+            left: 8%;
+            animation-delay: 0s;
+            animation-duration: 7.5s;
+            font-size: 2.4rem;
+        }
+        .float-item:nth-child(2) {
+            top: 12%;
+            right: 10%;
+            animation-delay: -1.8s;
+            animation-duration: 8.2s;
+            font-size: 2.1rem;
+        }
+        .float-item:nth-child(3) {
+            bottom: 18%;
+            left: 6%;
+            animation-delay: -3.2s;
+            animation-duration: 9.5s;
+            font-size: 2.6rem;
+        }
+        .float-item:nth-child(4) {
+            bottom: 10%;
+            right: 12%;
+            animation-delay: -5s;
+            animation-duration: 7.8s;
+            font-size: 2rem;
+        }
+        .float-item:nth-child(5) {
+            top: 40%;
+            left: 3%;
+            animation-delay: -2.4s;
+            animation-duration: 10s;
+            font-size: 1.7rem;
+        }
+        .float-item:nth-child(6) {
+            top: 35%;
+            right: 5%;
+            animation-delay: -4.5s;
+            animation-duration: 8.8s;
+            font-size: 2.3rem;
+        }
+
+        @keyframes floatAround {
+            0%,
+            100% {
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+            }
+            15% {
+                transform: translateY(-30px) translateX(18px) rotate(6deg) scale(1.06);
+            }
+            30% {
+                transform: translateY(-12px) translateX(-16px) rotate(-4deg) scale(0.94);
+            }
+            45% {
+                transform: translateY(-38px) translateX(8px) rotate(10deg) scale(1.04);
+            }
+            60% {
+                transform: translateY(-22px) translateX(-22px) rotate(-8deg) scale(0.96);
+            }
+            75% {
+                transform: translateY(-34px) translateX(14px) rotate(5deg) scale(1.02);
+            }
+            90% {
+                transform: translateY(-8px) translateX(-6px) rotate(-2deg) scale(0.98);
+            }
+        }
+
+        /* 主卡片 */
+        .card-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 440px;
+            animation: cardEntry 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+        }
+
+        @keyframes cardEntry {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.92);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 45px 28px 36px;
+            text-align: center;
+            box-shadow: var(--shadow), 0 0 0 1px var(--border);
+            position: relative;
+            border: 2px solid #ffe0d0;
+            transition: transform 0.3s ease;
+        }
+
+        /* 顶部标签 */
+        .top-badge {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ffab91, #ff8a65);
+            color: #fff;
+            padding: 9px 24px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+            box-shadow: 0 7px 22px rgba(255, 138, 101, 0.35);
+            animation: badgeBounce 2.2s ease-in-out infinite;
+        }
+        @keyframes badgeBounce {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-6px);
+            }
+        }
+
+        /* 头像 */
+        .avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffe0cc, #ffd0b8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            margin: 10px auto 12px;
+            box-shadow: 0 8px 28px rgba(255, 150, 120, 0.3);
+            animation: avatarPulse 3.2s ease-in-out infinite;
+            position: relative;
+        }
+        .avatar::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2.5px dashed #ffd0b8;
+            animation: spinDashed 22s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes spinDashed {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes avatarPulse {
+            0%,
+            100% {
+                box-shadow: 0 8px 28px rgba(255, 150, 120, 0.3);
+            }
+            50% {
+                box-shadow: 0 14px 40px rgba(255, 150, 120, 0.5);
+            }
+        }
+
+        /* 标题 */
+        .title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin: 10px 0 4px;
+            background: linear-gradient(135deg, #5c3d30, #7a4f3e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.3;
+        }
+        .subtitle {
+            font-size: 0.9rem;
+            color: #b89a8a;
+            margin-bottom: 26px;
+        }
+
+        /* 按钮组 */
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 15px 34px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            letter-spacing: 0.8px;
+            transition: all 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+            outline: none;
+            min-width: 120px;
+            font-family: inherit;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active {
+            transform: scale(0.94);
+            transition: all 0.08s ease;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #ff9e80, #ff7a5c);
+            color: #fff;
+            box-shadow: 0 8px 26px rgba(255, 122, 92, 0.4);
+            animation: yesGlow 2.8s ease-in-out infinite;
+        }
+        @keyframes yesGlow {
+            0%,
+            100% {
+                box-shadow: 0 8px 26px rgba(255, 122, 92, 0.4);
+            }
+            50% {
+                box-shadow: 0 14px 38px rgba(255, 122, 92, 0.6), 0 0 50px rgba(255, 160, 130, 0.25);
+            }
+        }
+
+        .btn-no {
+            background: #e8e0d8;
+            color: #8a7a6e;
+            box-shadow: 0 6px 22px rgba(150, 140, 130, 0.22);
+        }
+        .btn-no.running {
+            animation: shake 0.55s ease-in-out;
+            pointer-events: none;
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            15% {
+                transform: translateX(-16px) rotate(-4deg);
+            }
+            30% {
+                transform: translateX(14px) rotate(3deg);
+            }
+            45% {
+                transform: translateX(-20px) rotate(-5deg);
+            }
+            60% {
+                transform: translateX(18px) rotate(4deg);
+            }
+            75% {
+                transform: translateX(-8px) rotate(-2deg);
+            }
+            90% {
+                transform: translateX(6px) rotate(1deg);
+            }
+        }
+
+        /* Toast */
+        .toast-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toast-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .toast-box {
+            background: #fff;
+            padding: 26px 32px;
+            border-radius: 22px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            font-weight: 700;
+            color: #4a3040;
+            border: 2px solid #ffe0d0;
+            max-width: 82vw;
+            transform: scale(0);
+            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toast-overlay.show .toast-box {
+            transform: scale(1);
+        }
+        .toast-emoji {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 6px;
+            animation: bounceEmoji 0.5s ease-out;
+        }
+        @keyframes bounceEmoji {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.35);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .toast-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        /* 撒花 */
+        .confetti-box {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 998;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            animation: fall linear forwards;
+            opacity: 0;
+        }
+        @keyframes fall {
+            0% {
+                opacity: 1;
+                transform: translateY(-100px) rotate(0deg);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(18vh) rotate(200deg) scale(1.25);
+            }
+            70% {
+                opacity: 0.85;
+                transform: translateY(58vh) rotate(400deg) scale(0.75);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(105vh) rotate(600deg) scale(0.25);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .card {
+                padding: 38px 18px 28px;
+                border-radius: 22px;
+            }
+            .title {
+                font-size: 1.4rem;
+            }
+            .btn {
+                padding: 13px 26px;
+                font-size: 1rem;
+                min-width: 100px;
+                border-radius: 34px;
+            }
+            .btn-group {
+                gap: 12px;
+            }
+            .top-badge {
+                font-size: 0.75rem;
+                padding: 7px 18px;
+                top: -13px;
+            }
+            .avatar {
+                width: 62px;
+                height: 62px;
+                font-size: 2.2rem;
+            }
+            .float-item {
+                font-size: 1.4rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 漂浮装饰 -->
+    <div class="floating-bg">
+        <span class="float-item">🐷</span><span class="float-item">💕</span><span class="float-item">✨</span>
+        <span class="float-item">🐽</span><span class="float-item">💖</span><span class="float-item">🌷</span>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-overlay" id="toastOverlay">
+        <div class="toast-box">
+            <span class="toast-emoji" id="toastEmoji"></span>
+            <span class="toast-text" id="toastText"></span>
+        </div>
+    </div>
+
+    <!-- 撒花容器 -->
+    <div class="confetti-box" id="confettiBox"></div>
+
+    <!-- 卡片 -->
+    <div class="card-wrapper">
+        <div class="card" id="mainCard">
+            <div class="top-badge">🐽 灵魂拷问</div>
+            <div class="avatar">🐷</div>
+            <h1 class="title">徐诗涵你是不是猪</h1>
+            <p class="subtitle">请摸着良心回答～ 😏</p>
+            <div class="btn-group">
+                <button class="btn btn-yes" id="btnYes">🐷 是</button>
+                <button class="btn btn-no" id="btnNo">🙅 不是</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const btnNo = document.getElementById('btnNo');
+            const btnYes = document.getElementById('btnYes');
+            const toastOverlay = document.getElementById('toastOverlay');
+            const toastEmoji = document.getElementById('toastEmoji');
+            const toastText = document.getElementById('toastText');
+            const confettiBox = document.getElementById('confettiBox');
+            const mainCard = document.getElementById('mainCard');
+
+            let noClicks = 0;
+            let isRunning = false;
+            let toastTimer = null;
+            let noOriginal = {};
+
+            function saveNoState() {
+                noOriginal = {
+                    position: btnNo.style.position || '',
+                    top: btnNo.style.top || '',
+                    left: btnNo.style.left || '',
+                    right: btnNo.style.right || '',
+                    bottom: btnNo.style.bottom || '',
+                    transform: btnNo.style.transform || '',
+                    transition: btnNo.style.transition || '',
+                };
+            }
+
+            function restoreNo() {
+                btnNo.style.position = noOriginal.position;
+                btnNo.style.top = noOriginal.top;
+                btnNo.style.left = noOriginal.left;
+                btnNo.style.right = noOriginal.right;
+                btnNo.style.bottom = noOriginal.bottom;
+                btnNo.style.transform = noOriginal.transform;
+                btnNo.style.transition = noOriginal.transition;
+                btnNo.classList.remove('running');
+                isRunning = false;
+            }
+
+            function showToast(emoji, text, duration = 1800) {
+                if (toastTimer) clearTimeout(toastTimer);
+                toastEmoji.textContent = emoji;
+                toastText.textContent = text;
+                toastOverlay.classList.add('show');
+                toastEmoji.style.animation = 'none';
+                void toastEmoji.offsetWidth;
+                toastEmoji.style.animation = 'bounceEmoji 0.5s ease-out';
+                toastTimer = setTimeout(() => {
+                    toastOverlay.classList.remove('show');
+                    toastTimer = null;
+                }, duration);
+            }
+
+            function spawnConfetti(count = 50) {
+                const colors = [
+                    '#ff9e80', '#ff7a5c', '#ffb398', '#ffd1b8', '#ffab91',
+                    '#ffc2a8', '#fce4d6', '#f8cbb0', '#ff6e40', '#ff8a65',
+                ];
+                const frag = document.createDocumentFragment();
+                for (let i = 0; i < count; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'confetti';
+                    p.style.left = Math.random() * 100 + '%';
+                    p.style.top = -(Math.random() * 50 + 10) + 'px';
+                    p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    p.style.width = (Math.random() * 12 + 6) + 'px';
+                    p.style.height = (Math.random() * 12 + 6) + 'px';
+                    p.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+                    p.style.animationDuration = (Math.random() * 2 + 1.4) + 's';
+                    p.style.animationDelay = Math.random() * 1 + 's';
+                    frag.appendChild(p);
+                }
+                confettiBox.appendChild(frag);
+                setTimeout(() => { confettiBox.innerHTML = ''; }, 3200);
+            }
+
+            function shakeCard() {
+                mainCard.style.animation = 'none';
+                void mainCard.offsetWidth;
+                mainCard.style.animation = 'shakeCard 0.5s ease-out';
+                setTimeout(() => { mainCard.style.animation = ''; }, 500);
+            }
+            const shakeStyle = document.createElement('style');
+            shakeStyle.textContent =
+                '@keyframes shakeCard{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}';
+            document.head.appendChild(shakeStyle);
+
+            function makeNoRun() {
+                if (isRunning) return;
+                isRunning = true;
+                saveNoState();
+                const dirs = [
+                    { top: '-70px', left: 'auto', right: '-15px', bottom: 'auto' },
+                    { top: '55px', left: '-40px', right: 'auto', bottom: 'auto' },
+                    { top: '-50px', left: '-30px', right: 'auto', bottom: 'auto' },
+                    { top: '45px', left: 'auto', right: '-50px', bottom: 'auto' },
+                    { top: '-85px', left: '20px', right: 'auto', bottom: 'auto' },
+                    { top: '65px', left: 'auto', right: '5px', bottom: 'auto' },
+                ];
+                const d = dirs[Math.floor(Math.random() * dirs.length)];
+                btnNo.style.position = 'relative';
+                btnNo.style.transition = 'all 0.4s cubic-bezier(0.22,0.61,0.36,1)';
+                btnNo.style.top = d.top;
+                btnNo.style.left = d.left;
+                btnNo.style.right = d.right;
+                btnNo.style.bottom = d.bottom;
+                btnNo.classList.add('running');
+                setTimeout(() => { if (isRunning) restoreNo(); }, 1400);
+            }
+
+            window.chooseYes = function() {
+                showToast('🐷', '可以可以很有自知之明', 2200);
+                spawnConfetti(70);
+                btnYes.style.transform = 'scale(1.12)';
+                btnYes.style.boxShadow =
+                    '0 18px 44px rgba(255,122,92,0.65), 0 0 60px rgba(255,160,130,0.4)';
+                setTimeout(() => {
+                    btnYes.style.transform = '';
+                    btnYes.style.boxShadow = '';
+                }, 350);
+                if (isRunning) restoreNo();
+                noClicks = 0;
+            };
+
+            window.chooseNo = function() {
+                if (isRunning) return;
+                noClicks++;
+                switch (noClicks) {
+                    case 1:
+                        showToast('🤨', '只可以选是哦～', 1700);
+                        shakeCard();
+                        break;
+                    case 2:
+                        showToast('😤', '都说了只可以选是！', 1900);
+                        shakeCard();
+                        btnNo.style.transform = 'translateX(-3px)';
+                        setTimeout(() => { btnNo.style.transform = 'translateX(3px)'; }, 80);
+                        setTimeout(() => { btnNo.style.transform = 'translateX(-3px)'; }, 160);
+                        setTimeout(() => { btnNo.style.transform = ''; }, 240);
+                        break;
+                    case 3:
+                        showToast('🙄', '你怎么回事～只能选是！', 2100);
+                        makeNoRun();
+                        break;
+                    case 4:
+                        showToast('😈', '别挣扎了！只能选是！', 2200);
+                        makeNoRun();
+                        shakeCard();
+                        break;
+                    default:
+                        showToast('🤪', '哈哈哈哈太倔强了吧！\n只！能！选！是！', 2400);
+                        makeNoRun();
+                        shakeCard();
+                        spawnConfetti(18);
+                        break;
+                }
+            };
+
+            btnYes.addEventListener('click', window.chooseYes);
+            btnNo.addEventListener('click', window.chooseNo);
+
+            btnNo.addEventListener('mouseenter', function() {
+                if (!isRunning && noClicks >= 2 && Math.random() < 0.55) makeNoRun();
+            });
+            btnNo.addEventListener('touchstart', function(e) {
+                if (!isRunning && noClicks >= 2 && Math.random() < 0.45) {
+                    e.preventDefault();
+                    makeNoRun();
+                    setTimeout(() => { if (isRunning) restoreNo();
+                        window.chooseNo(); }, 180);
+                }
+            }, { passive: false });
+
+            toastOverlay.addEventListener('click', function(e) {
+                if (e.target === toastOverlay) {
+                    if (toastTimer) clearTimeout(toastTimer);
+                    toastOverlay.classList.remove('show');
+                    toastTimer = null;
+                }
+            });
+
+            saveNoState();
+        })();
+    </script>
+</body>
+</html>
